@@ -1,0 +1,100 @@
+const path = require('path');
+const fs = require('fs');
+const EventEmitter = require('events');
+const os = require('os');
+
+function logExecutionPaths() {
+  console.log(`File: ${__filename}, Dir: ${__dirname}`);
+}
+logExecutionPaths();
+
+function extractDocumentName(filePath) {
+  return path.basename(filePath);
+}
+console.log(extractDocumentName('/user/files/report.pdf'));
+
+function constructFilePath({ dir, name, ext }) {
+  return path.join(dir, name + ext);
+}
+console.log(constructFilePath({ dir: '/folder', name: 'app', ext: '.js' }));
+
+function getFileType(filePath) {
+  return path.extname(filePath);
+}
+console.log(getFileType('/docs/readme.md'));
+
+function getPathMetadata(filePath) {
+  const parsed = path.parse(filePath);
+  return { Name: parsed.name, Ext: parsed.ext };
+}
+console.log(getPathMetadata('/home/app/main.js'));
+
+function isAbsolutePath(filePath) {
+  return path.isAbsolute(filePath);
+}
+console.log(isAbsolutePath('/home/user/file.txt'));
+
+function resolveComponentPath(...segments) {
+  return path.join(...segments);
+}
+console.log(resolveComponentPath('src', 'components', 'App.js'));
+
+function getAbsoluteLocation(relativePath) {
+  return path.resolve(relativePath);
+}
+console.log(getAbsoluteLocation('./index.js'));
+
+function mergeDirectories(p1, p2) {
+  return path.join(p1, p2);
+}
+console.log(mergeDirectories('/folder1', 'folder2/file.txt'));
+
+function cleanUpResource(filePath) {
+  fs.unlink(filePath, (err) => {
+    if (err) throw err;
+    console.log(`The file.txt is deleted.`);
+  });
+}
+cleanUpResource('/path/to/file.txt');
+
+function initializeStorageFolder(folderPath) {
+  fs.mkdirSync(folderPath, { recursive: true });
+  console.log('Success');
+}
+initializeStorageFolder('./newFolder');
+
+const appEvents = new EventEmitter();
+appEvents.on('start', () => {
+  console.log('Welcome event triggered!');
+});
+appEvents.emit('start');
+
+const authEvents = new EventEmitter();
+authEvents.on('login', (username) => {
+  console.log(`User logged in: ${username}`);
+});
+authEvents.emit('login', 'Ahmed');
+
+function loadConfiguration(filePath) {
+  const content = fs.readFileSync(filePath, 'utf-8');
+  console.log(`the file content => "${content}"`);
+}
+loadConfiguration('./notes.txt');
+
+function saveUserData(filePath, content) {
+  fs.writeFile(filePath, content, (err) => {
+    if (err) throw err;
+    console.log('Async save');
+  });
+}
+saveUserData('./async.txt', 'Async save');
+
+function isFileAvailable(filePath) {
+  return fs.existsSync(filePath);
+}
+console.log(isFileAvailable('/notes.txt'));
+
+function fetchHostDetails() {
+  return { Platform: os.platform(), Arch: os.arch() };
+}
+console.log(fetchHostDetails());
